@@ -1,0 +1,11 @@
+<!doctype html>
+<title>{{ name }}</title>
+<link rel="stylesheet" type="text/css" href="/static/style.css">
+<h1>You're the best {{ name }}</h1>
+<body>
+    <form method="post" action="/add_user">
+    <label> Type your name</label>
+        <input id="name" name="name" type="text"/>
+        <input type="submit" name="submit"/>
+    </form>
+</body>
