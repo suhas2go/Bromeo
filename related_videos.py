@@ -1,7 +1,10 @@
+import os
+import json
 import random
 from py2neo import Graph, NodeSelector
 
-PASSWORD = "generic_password"
+PATH = "dataset/"
+PASSWORD = "susususu"
 
 PROB_DESC_RELATION = 1/3
 PROB_CHANNEL_RELATION = 1/3
@@ -46,4 +49,18 @@ def get_related_videos(video_id):
     graph = Graph(password=PASSWORD)
     selector = NodeSelector(graph)
     origin_node = selector.select("YoutubeVideos").where(name=video_id).first()
-    return random_walk_with_restart(graph,origin_node,PROB_RESTART,NUMBER_OF_WALKS,0,CUTOFF_SCORE)
+    node_weights = random_walk_with_restart(graph,origin_node,PROB_RESTART,NUMBER_OF_WALKS,0,CUTOFF_SCORE)
+    sorted_node_weights = sorted(node_weights, key=lambda video: node_weights[video], reverse=True)
+    list_of_nodes = []
+    related_videos = []
+    for n in sorted_node_weights:
+        list_of_nodes.append(n.properties["name"])
+    filelist = os.listdir(PATH)
+    for i in range(len(filelist)):
+        filelist[i] = PATH + filelist[i]
+        page = open(filelist[i], "r")
+        parsed = json.loads(page.read())
+        if parsed['videoInfo']['id'] in list_of_nodes:
+            related_videos.append(parsed)
+    return related_videos
+

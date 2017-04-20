@@ -9,7 +9,7 @@ videos = db.videos
 CHANNEL_BOOL_THRESHOLD = 0.4
 
 
-def get_searchresults(query, uid):
+def get_search_results(query, uid):
     video_result = []
     video_dict={}
     for video in videos.find():

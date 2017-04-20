@@ -1,15 +1,17 @@
 import flask
 import helper
-import pymysql.cursors
+import url_prior
+import related_videos
+import search_results
+import database_setup.sql_insert
 
-connection = pymysql.connect(host='localhost', user='root', password='root', charset='utf8mb4',
-                             cursorclass=pymysql.cursors.DictCursor)
 app = flask.Flask(__name__)
 data = helper.get_data()
 
 
 def get_related_videos(vid):
     uid = flask.request.remote_addr
+    related_videos.get_related_videos(vid['videoInfo']['id'])
     return data[2:10]
 
 
@@ -20,16 +22,19 @@ def get_trending_videos():
 
 def get_recently_watched():
     uid = flask.request.remote_addr
+    url_prior.get_recently_watched(uid)
     return data[2:10]
 
 
 def get_search_results(query):
     uid = flask.request.remote_addr
+    search_results.get_search_results(query,uid)
     return data[0: 10]
 
 
 def clicked_on_video(vid):
     uid = flask.request.remote_addr
+    database_setup.sql_insert.clicked_on_video(uid,vid)
     pass
 
 
