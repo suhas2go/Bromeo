@@ -21,3 +21,8 @@ select.page-range {
 .sidebar-module-inset ol:last-child {
     margin-bottom: 0;
 }
+
+div.description {
+    background-color: #f5f5f5;
+    border-radius: .1rem;
+}
