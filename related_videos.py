@@ -46,6 +46,4 @@ def get_related_videos(video_id):
     graph = Graph(password=PASSWORD)
     selector = NodeSelector(graph)
     origin_node = selector.select("YoutubeVideos").where(name=video_id).first()
-    print (origin_node)
-    get_neighbours(graph, origin_node)
     return random_walk_with_restart(graph,origin_node,PROB_RESTART,NUMBER_OF_WALKS,0,CUTOFF_SCORE)
