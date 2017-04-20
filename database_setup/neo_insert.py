@@ -7,7 +7,7 @@ DESCRIPTION_SIMILARITY_THRESHOLD = 0.3
 TITLE_SIMILARITY_THRESHOLD = 0.2
 
 PATH = "/home/drogon/Downloads/DatabaseLab/6/test/"
-PASSWORD = "susususu"
+PASSWORD = "generic_password"
 
 
 def compareText(text1, text2, THRESHOLD):
