@@ -122,15 +122,15 @@ var Pagination = function (el, options) {
 		var pageNumbers = getPageNumbersToDisplay(),
 			result;
 
-		result = '<li data-page="' + FIRST_PAGE_NUMBER + '"><a href="javascipt:void(0)"><span aria-hidden="true">' + firstPageLabel + '</span></a></li>' +
-				 '<li data-page="' + PREVIOUS_PAGE_NUMBER + '"><a href="javascipt:void(0)"><span aria-hidden="true">' + previousPageLabel + '</span></a></li>';
+		result = '<li data-page="' + FIRST_PAGE_NUMBER + '"><a href="javascript:void(0)"><span aria-hidden="true">' + firstPageLabel + '</span></a></li>' +
+				 '<li data-page="' + PREVIOUS_PAGE_NUMBER + '"><a href="javascript:void(0)"><span aria-hidden="true">' + previousPageLabel + '</span></a></li>';
 
 		$.each(pageNumbers, function (i, p) {
-			result += '<li data-page="' + p + '" ' + (p === currentPage ? 'class="active"' : '') + '><a href="javascipt:void(0)">' + p + '</a></li>';
+			result += '<li data-page="' + p + '" ' + (p === currentPage ? 'class="active"' : '') + '><a href="javascript:void(0)">' + p + '</a></li>';
 		});
 
-		result += '<li data-page="' + NEXT_PAGE_NUMBER + '"><a href="javascipt:void(0)"><span aria-hidden="true">' + nextPageLabel + '</span></a></li>' +
-				  '<li data-page="' + LAST_PAGE_NUMBER + '"><a href="javascipt:void(0)"><span aria-hidden="true">' + lastPageLabel + '</span></a></li>';
+		result += '<li data-page="' + NEXT_PAGE_NUMBER + '"><a href="javascript:void(0)"><span aria-hidden="true">' + nextPageLabel + '</span></a></li>' +
+				  '<li data-page="' + LAST_PAGE_NUMBER + '"><a href="javascript:void(0)"><span aria-hidden="true">' + lastPageLabel + '</span></a></li>';
 
 		return result;
 	};
