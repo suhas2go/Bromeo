@@ -11,9 +11,6 @@ import time
 '''
 
 
-
-
-
 def clicked_on_video(user_id, video):
     conn = sqlite3.connect('history.db')
     print("Opened database successfully")

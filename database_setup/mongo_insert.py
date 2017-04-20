@@ -8,7 +8,7 @@ client = MongoClient()
 db = client.youtube
 videos = db.videos
 
-folder_name = "test/"
+folder_name = "../dataset/"
 
 for filename in os.listdir(folder_name):
     print("storing", filename)
