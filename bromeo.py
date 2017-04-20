@@ -1,45 +1,42 @@
 import flask
-import helper
+from pymongo import MongoClient, ASCENDING
+
 import url_prior
 import related_videos
 import search_results
 import database_setup.sql_insert
 
 app = flask.Flask(__name__)
-data = helper.get_data()
+client = MongoClient()
+db = client.youtube
+videos = db.videos
 
 
 def get_related_videos(vid):
-    uid = flask.request.remote_addr
-    related_videos.get_related_videos(vid['videoInfo']['id'])
-    return data[2:10]
+    return related_videos.get_related_videos(vid)
 
 
 def get_trending_videos():
-    uid = flask.request.remote_addr
-    return data[2:10]
+    return videos.find().sort('videoInfo.statistics.viewCount', ASCENDING).limit(24)
 
 
 def get_recently_watched():
     uid = flask.request.remote_addr
-    url_prior.get_recently_watched(uid)
-    return data[2:10]
+    return url_prior.get_recently_watched(uid)
 
 
 def get_search_results(query):
     uid = flask.request.remote_addr
-    search_results.get_search_results(query,uid)
-    return data[0: 10]
+    return search_results.get_search_results(query, uid)
 
 
 def clicked_on_video(vid):
     uid = flask.request.remote_addr
-    database_setup.sql_insert.clicked_on_video(uid,vid)
-    pass
+    database_setup.sql_insert.clicked_on_video(uid, vid)
 
 
 def get_video(vid):
-    return data[0]
+    return videos.find_one({"videoInfo.id": vid})
 
 
 @app.template_global('url_for_search')
@@ -94,11 +91,6 @@ def how():
 def recents():
     results = get_recently_watched()
     return flask.render_template("recents.html", results=results)
-
-
-@app.route('/about', methods=["GET"])
-def about():
-    return flask.render_template("about.html")
 
 
 if __name__ == '__main__':
