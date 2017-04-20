@@ -1,132 +1,43 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link rel="icon" href="/static/favicon.ico">
-
-    <title>Starter Template for Bootstrap</title>
-
-    <!-- Bootstrap core CSS -->
-    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
-    <link href="/static/css/style.css" rel="stylesheet">
-</head>
-
-<body>
-
-<nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
-                    aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="#">Project name</a>
-        </div>
-        <div id="navbar" class="collapse navbar-collapse">
-            <ul class="nav navbar-nav">
-                <li class="active"><a href="#">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-            <form id="signin" class="navbar-form navbar-right" role="form">
-                <div class="input-group">
-                    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                    <input id="email" type="email" class="form-control" name="email" value=""
-                           placeholder="Email Address">
-                </div>
-
-                <div class="input-group">
-                    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                    <input id="password" type="password" class="form-control" name="password" value=""
-                           placeholder="Password">
-                </div>
-
-                <button type="submit" class="btn btn-primary">Login</button>
-                <button type="submit" class="btn btn-primary">Sign up</button>
-            </form>
-
-        </div><!--/.nav-collapse -->
-    </div>
-</nav>
-
-<div class="container">
-
-    <div>
-        <div class="container">
-            <div class="row">
-                <div class="col-xs-8 col-xs-offset-2">
-                    <div class="input-group">
-                        <div class="input-group-btn search-panel">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                <span id="search_concept">Filter by</span> <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a href="#contains">Contains</a></li>
-                                <li><a href="#its_equal">It's equal</a></li>
-                                <li><a href="#greather_than">Greather than ></a></li>
-                                <li><a href="#less_than">Less than < </a></li>
-                                <li class="divider"></li>
-                                <li><a href="#all">Anything</a></li>
-                            </ul>
-                        </div>
-                        <input type="hidden" name="search_param" value="all" id="search_param">
-                        <input type="text" class="form-control" name="x" placeholder="Search term...">
-                        <span class="input-group-btn">
-                    <button class="btn btn-default" type="button"><span
-                            class="glyphicon glyphicon-search"></span></button>
-                </span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Page Heading -->
-        <div class="row">
-            <div class="col-lg-12">
-                <h1 class="page-header">Search Results
-                </h1>
-            </div>
-        </div>
-        <!-- /.row -->
-
-        <!-- Project One -->
-        <div class="row">
-            <div class="col-md-6">
-                <a href="#">
-                    <img class="img-responsive" src="http://placehold.it/700x300" alt="">
+{% extends "layouts/base.html" %}
+{% block heading %}Trending Videos{% endblock %}
+{% block content %}
+    <script type="text/javascript" src="/static/js/pagination.js"></script>
+    <div id="trending" class="row">
+        {% for result in results %}
+            <div class="col-sm-3 col-xs-6">
+                <a href="{{ url_for('related', video_id=result.videoInfo.id) }}">
+                    <img class="img-responsive portfolio-item"
+                         src="{{ result.videoInfo.snippet.thumbnails.medium.url }}"
+                         alt="">
+                    <h5>{{ result.videoInfo.snippet.title }}</h5>
+                </a>
+                <a href="{{ url_for_search(query=result.videoInfo.snippet.channelTitle) }}">
+                    <h6>{{ result.videoInfo.snippet.channelTitle }}</h6>
                 </a>
             </div>
-            <div class="col-md-5">
-                <h3>Project One</h3>
-                <h4>Subheading</h4>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laudantium veniam exercitationem expedita
-                    laborum at voluptate. Labore, voluptates totam at aut nemo deserunt rem magni pariatur quos
-                    perspiciatis atque eveniet unde.</p>
-                <a class="btn btn-primary" href="#">View Project <span class="glyphicon glyphicon-chevron-right"></span></a>
-            </div>
-        </div>
-        <!-- /.row -->
-        <hr>
+        {% endfor %}
     </div>
-
-</div><!-- /.container -->
-
-
-<!-- Bootstrap core JavaScript
-================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
-<script src="/static/js/jquery.min.js"></script>
-<script>window.jQuery || document.write('<script src="/static/js/vendor/jquery.min.js"><\/script>')</script>
-<script src="/static/js/bootstrap.min.js"></script>
-</body>
-</html>
+    <center>
+        <div class="paging-container" id="tablePaging"></div>
+    </center>
+    <script type=text/javascript>
+        $(function () {
+            var load = function () {
+                window.tp = new Pagination('#tablePaging', {
+                    itemsCount: {{ results|length }},
+                    pageRange: [8],
+                    onPageChange: function (paging) {
+                        var start = paging.pageSize * (paging.currentPage - 1),
+                            end = start + paging.pageSize,
+                            $rows = $('#trending').find('.col-sm-3');
+                        $rows.hide();
+                        for (var i = start; i < end; i++) {
+                            $rows.eq(i).show();
+                        }
+                    }
+                });
+            };
+            load();
+        });
+    </script>
+{% endblock %}

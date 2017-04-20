@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="/static/js/jquery.min.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
+<script>
+    function startDictation() {
+        if (window.hasOwnProperty('webkitSpeechRecognition')) {
+            var recognition = new webkitSpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = "en-US";
+            recognition.start();
+            recognition.onresult = function (e) {
+                document.getElementById('transcript').value
+                    = e.results[0][0].transcript;
+                recognition.stop();
+                document.getElementById('searchBox').submit();
+            };
+            recognition.onerror = function (e) {
+                recognition.stop();
+            }
+        }
+    }
+</script>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bromeo</title>
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/style.css" rel="stylesheet">
+</head>
+
+<body>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand">Bromeo</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                <li><a href="{{ url_for('recents') }}">Recently watched</a></li>
+                <li><a href="{{ url_for('how') }}">How it works</a></li>
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+</nav>
+
+<div class="container">
+    <div>
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-8 col-xs-offset-2">
+                    <form class="form-horizontal" id="searchBox" method="get" action="{{ url_for('search') }}">
+                        <div class="form-group" style="display:inline;">
+                            <div class="input-group" style="display:table;">
+                                <div class="input-group-btn navbar-btn">
+                                    <img onclick="startDictation()" width="30" height="30"
+                                         src="http://i.imgur.com/cHidSVu.gif"/>
+                                </div>
+                                <input id="transcript" class="form-control" name="search" placeholder="{{ query }}"
+                                       autocomplete="off"
+                                       autofocus="autofocus" type="text">
+                                <div class="input-group-btn navbar-btn">
+                                    <button class="btn btn-default btn-nav" type="submit" name="action" value="search">
+                                        GO
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <h4>{% block heading %}{% endblock %}</h4>
+            </div>
+        </div>
+
+        {% block content %}
+        {% endblock %}
+    </div>
+</div><!-- /.container -->
+
+</body>
+</html>
